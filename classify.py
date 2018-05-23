@@ -5,13 +5,9 @@ Author Yizhen Chen
 import numpy as np
 import tensorflow as tf
 import argparse
-import os
 import sys
 import cv2
-import skimage
-import skimage.io
-from PIL import Image
-from io import BytesIO
+
 
 FLAGS = None
 DATASET_MEAN = [104, 117, 123]
@@ -22,6 +18,7 @@ def create_graph():
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
         _ = tf.import_graph_def(graph_def, name='')
+
 
 def run_inference_on_image(filename, img_size=(256, 256)):
     if not tf.gfile.Exists(filename):
@@ -37,7 +34,7 @@ def run_inference_on_image(filename, img_size=(256, 256)):
     image = image[h_off:h_off + h, w_off:w_off + w, :]
     image = image.astype(np.float32, copy=False)
     image -= np.array(DATASET_MEAN, dtype=np.float32)
-    input = np.expand_dims(image, axis=0)
+    feed_input = np.expand_dims(image, axis=0)
     create_graph()
 
     with tf.Session() as sess:
@@ -45,17 +42,18 @@ def run_inference_on_image(filename, img_size=(256, 256)):
         data_tensor = sess.graph.get_tensor_by_name('data:0')
 
         predictions = sess.run(softmax_tensor,
-                               feed_dict={data_tensor: input})
+                               feed_dict={data_tensor: feed_input})
         predictions = np.squeeze(predictions)
 
-        print('SFW score: {0:.3f}, NSFW score: {1:.3f}'.format(*predictions))
+        print('SFW score: {0:.4f}, NSFW score: {1:.4f}'.format(*predictions))
 
-    return predictions
+        return predictions
+
 
 def main(_):
-    image = (FLAGS.image_path if FLAGS.image_path else
-            'elephant.jpg')
+    image = (FLAGS.image_path if FLAGS.image_path else 'elephant.jpg')
     run_inference_on_image(image)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
