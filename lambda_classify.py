@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
 Author Yizhen Chen
+Deploy on AWS lambda
 """
 import numpy as np
 import tensorflow as tf
