@@ -5,13 +5,10 @@ Deploy on AWS lambda
 """
 import numpy as np
 import tensorflow as tf
-import skimage
-import skimage.io
+import cv2
 import os
 import boto3
 import base64
-from PIL import Image
-from io import BytesIO
 
 s3 = boto3.resource('s3')
 
@@ -30,27 +27,16 @@ def create_graph():
 
 
 def run_inference_on_image(image, img_size=(256, 256)):
+    nparr = np.fromstring(image, np.uint8)
+    img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    image = cv2.resize(img_np, img_size)
 
-    im = Image.open(BytesIO(image))
-
-    if im.mode != "RGB":
-        im = im.convert('RGB')
-
-    resize_image = im.resize(img_size, resample=Image.BILINEAR)
-    fh_im = BytesIO()
-    resize_image.save(fh_im, format='JPEG')
-    fh_im.seek(0)
-    image = (skimage.img_as_float(skimage.io.imread(fh_im, as_grey=False))
-             .astype(np.float32))
     H, W, _ = image.shape
     h, w = (224, 224)
     h_off = max((H - h) // 2, 0)
     w_off = max((W - w) // 2, 0)
     image = image[h_off:h_off + h, w_off:w_off + w, :]
-    # RGB to BGR
-    image = image[:, :, :: -1]
     image = image.astype(np.float32, copy=False)
-    image = image * 255.0
     image -= np.array(DATASET_MEAN, dtype=np.float32)
     feed_input = np.expand_dims(image, axis=0)
     create_graph()
