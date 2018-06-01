@@ -2,6 +2,8 @@
 """
 Author Yizhen Chen
 """
+from __future__ import print_function
+
 import numpy as np
 import tensorflow as tf
 import argparse
@@ -29,8 +31,8 @@ def run_inference_on_image(filename, img_size=(256, 256)):
 
     H, W, _ = image.shape
     h, w = (224, 224)
-    h_off = max((H - h) // 2, 0)
-    w_off = max((W - w) // 2, 0)
+    h_off = max((H - h) / 2, 0)
+    w_off = max((W - w) / 2, 0)
     image = image[h_off:h_off + h, w_off:w_off + w, :]
     image = image.astype(np.float32, copy=False)
     image -= np.array(DATASET_MEAN, dtype=np.float32)
