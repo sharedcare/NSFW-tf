@@ -2,5 +2,5 @@ matplotlib==2.2.2
 numpy==1.14.3
 opencv-python==3.4.1.15
 protobuf==3.5.2.post1
-tensorboard==1.8.0
-tensorflow==1.8.0
+tensorboard==1.0.0
+tensorflow==1.0.0
