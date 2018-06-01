@@ -69,8 +69,8 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": {
-                "sfw": predictions[0],
-                "nsfw": predictions[1]
+                "sfw": str(predictions[0]),
+                "nsfw": str(predictions[1])
             },
             "headers": {
                 "Access-Control-Allow-Origin": "*"
