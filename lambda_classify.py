@@ -72,6 +72,7 @@ def lambda_handler(event, context):
                 "nsfw": str(predictions[1])
             },
             "headers": {
+                "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*"
             }
         }
@@ -80,6 +81,7 @@ def lambda_handler(event, context):
             "statusCode": 400,
             "body": "image is required",
             "headers": {
+                "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*"
             }
         }
