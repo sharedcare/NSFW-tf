@@ -11,6 +11,7 @@ import cv2
 import os
 import boto3
 import base64
+import json
 
 s3 = boto3.resource('s3')
 
@@ -56,7 +57,7 @@ def run_inference_on_image(image, img_size=(256, 256)):
 
 
 def lambda_handler(event, context):
-    image_b64 = event['body']['image']
+    image_b64 = json.loads(event["body"])["image"]
     if image_b64:
         # This must be called before create_graph().
         print('Downloading Model from S3...')
@@ -67,10 +68,10 @@ def lambda_handler(event, context):
         predictions = run_inference_on_image(image_data)
         return {
             "statusCode": 200,
-            "body": {
+            "body": json.dumps({
                 "sfw": str(predictions[0]),
                 "nsfw": str(predictions[1])
-            },
+            }),
             "headers": {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*"
