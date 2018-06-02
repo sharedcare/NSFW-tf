@@ -57,7 +57,7 @@ def run_inference_on_image(image, img_size=(256, 256)):
 
 
 def lambda_handler(event, context):
-    image_b64 = event['body-json']['image']
+    image_b64 = event['body']['image']
     if image_b64:
         # This must be called before create_graph().
         print('Downloading Model from S3...')
