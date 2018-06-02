@@ -14,7 +14,6 @@ import base64
 
 s3 = boto3.resource('s3')
 
-FLAGS = None
 DATASET_MEAN = [104, 117, 123]
 
 MODEL_GRAPH_DEF_PATH = os.path.join(os.sep, 'tmp', 'model.pb')
